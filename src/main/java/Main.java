@@ -18,6 +18,7 @@ public class Main {
             if (input.equals("exit 0")) {
                 System.exit(0);
             } else if (command.equals("echo")) {
+                // Just print everything after "echo "
                 System.out.println(input.substring(5));
             } else if (command.equals("type")) {
                 if (parts.length < 2) {
@@ -45,38 +46,44 @@ public class Main {
                     }
                 }
             } else {
-                // Try to find and run external command
+                // Try to run external command using just the command name (not full path)
                 String path = System.getenv("PATH");
-                boolean executed = false;
+                boolean found = false;
+
                 if (path != null) {
                     for (String dir : path.split(":")) {
                         File file = new File(dir, command);
                         if (file.exists() && file.canExecute()) {
-                            List<String> fullCommand = new ArrayList<>();
-                            fullCommand.add(file.getAbsolutePath());
-                            fullCommand.addAll(Arrays.asList(commandArgs));
-
-                            ProcessBuilder pb = new ProcessBuilder(fullCommand);
-                            pb.redirectErrorStream(true);
-                            Process process = pb.start();
-
-                            // Print process output
-                            try (BufferedReader reader = new BufferedReader(
-                                    new InputStreamReader(process.getInputStream()))) {
-                                String line;
-                                while ((line = reader.readLine()) != null) {
-                                    System.out.println(line);
-                                }
-                            }
-
-                            process.waitFor();
-                            executed = true;
+                            found = true;
                             break;
                         }
                     }
                 }
 
-                if (!executed) {
+                if (found) {
+                    List<String> fullCommand = new ArrayList<>();
+                    fullCommand.add(command);  // just the command name
+                    fullCommand.addAll(Arrays.asList(commandArgs));
+
+                    ProcessBuilder pb = new ProcessBuilder(fullCommand);
+                    pb.environment().put("PATH", path); // maintain the correct PATH
+                    pb.redirectErrorStream(true);
+                    try {
+                        Process process = pb.start();
+
+                        BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(process.getInputStream()));
+
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            System.out.println(line);
+                        }
+
+                        process.waitFor();
+                    } catch (IOException e) {
+                        System.out.println(command + ": command not found");
+                    }
+                } else {
                     System.out.println(command + ": command not found");
                 }
             }
