@@ -1,6 +1,5 @@
-import java.io.File;
-import java.util.Scanner;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -10,37 +9,76 @@ public class Main {
         while (true) {
             System.out.print("$ ");
             String input = scanner.nextLine().trim();
+            if (input.isEmpty()) continue;
+
+            String[] parts = input.split(" ");
+            String command = parts[0];
+            String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
 
             if (input.equals("exit 0")) {
                 System.exit(0);
-            } else if (input.startsWith("echo ")) {
-                String toEcho = input.substring(5);
-                System.out.println(toEcho);
-            } else if (input.startsWith("type ")) {
-                String cmd = input.substring(5).trim();
-
-                if (builtins.contains(cmd)) {
-                    System.out.println(cmd + " is a shell builtin");
+            } else if (command.equals("echo")) {
+                System.out.println(input.substring(5));
+            } else if (command.equals("type")) {
+                if (parts.length < 2) {
+                    System.out.println("type: missing operand");
+                    continue;
+                }
+                String target = parts[1];
+                if (builtins.contains(target)) {
+                    System.out.println(target + " is a shell builtin");
                 } else {
-                    String pathEnv = System.getenv("PATH");
+                    String path = System.getenv("PATH");
                     boolean found = false;
-                    if (pathEnv != null) {
-                        String[] paths = pathEnv.split(":");
-                        for (String dir : paths) {
-                            File file = new File(dir, cmd);
+                    if (path != null) {
+                        for (String dir : path.split(":")) {
+                            File file = new File(dir, target);
                             if (file.exists() && file.canExecute()) {
-                                System.out.println(cmd + " is " + file.getAbsolutePath());
+                                System.out.println(target + " is " + file.getAbsolutePath());
                                 found = true;
                                 break;
                             }
                         }
                     }
                     if (!found) {
-                        System.out.println(cmd + ": not found");
+                        System.out.println(target + ": not found");
                     }
                 }
             } else {
-                System.out.println(input + ": command not found");
+                // Try to find and run external command
+                String path = System.getenv("PATH");
+                boolean executed = false;
+                if (path != null) {
+                    for (String dir : path.split(":")) {
+                        File file = new File(dir, command);
+                        if (file.exists() && file.canExecute()) {
+                            List<String> fullCommand = new ArrayList<>();
+                            fullCommand.add(file.getAbsolutePath());
+                            fullCommand.addAll(Arrays.asList(commandArgs));
+
+                            ProcessBuilder pb = new ProcessBuilder(fullCommand);
+                            pb.redirectErrorStream(true);
+                            Process process = pb.start();
+
+                            // Print process output
+                            try (BufferedReader reader = new BufferedReader(
+                                    new InputStreamReader(process.getInputStream()))) {
+                                String line;
+                                while ((line = reader.readLine()) != null) {
+                                    System.out.println(line);
+                                }
+                            }
+
+                            process.waitFor();
+                            executed = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!executed) {
+                    System.out.println(command + ": command not found");
+                }
             }
         }
     }
