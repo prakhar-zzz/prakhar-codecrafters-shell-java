@@ -32,7 +32,7 @@ public class Main {
       }
        else if (input.startsWith("pwd"))                             //pwd
        {
-        System.out.println(System.getProperty("user.dir"));
+        System.out.println(currentDirectory.getAbsolutePath());
       } 
       else if(input.startsWith("cd"))                                 //cd
       {
