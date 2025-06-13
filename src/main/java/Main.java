@@ -118,8 +118,9 @@ public class Main
           {
             System.out.println(cmd + ": not found");
           }
-        }
-       else {
+        
+       else 
+       {
         String[] parts = input.split("\\s+");
         String command = parts[0];
         String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
@@ -132,20 +133,29 @@ public class Main
         pb.directory(currentDirectory); // respect cd'd directory
         pb.redirectErrorStream(true);
 
-        try {
+        try 
+        {
           Process process = pb.start();
           BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
           String line;
-          while ((line = reader.readLine()) != null) {
+          while ((line = reader.readLine()) != null) 
+          {
             System.out.println(line);
           }
 
           process.waitFor();
-        } catch (IOException | InterruptedException e) {
+        }
+         catch (IOException | InterruptedException e) 
+        {
           System.out.println(command + ": command not found");
         }
       }
+      }
     }
   }
+  }
 }
+  
+        
+  
