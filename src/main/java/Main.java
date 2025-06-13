@@ -56,6 +56,7 @@ public class Main
                    {
                        currentDirectory = targetDir;            
                    }
+                  }   
           else if (directory.equals("../")) 
              {
                File parent = currentDirectory.getParentFile();
