@@ -15,47 +15,60 @@ public class Main {
 
     File currentDirectory = new File(System.getProperty("user.dir"));
 
-    while (true) {
+    while (true) 
+    {
       System.out.print("$ ");
       String input = scanner.nextLine().trim();
 
-      if (input.equals("exit 0"))    //exit
+      if (input.equals("exit 0"))                          //exit
       {
         System.exit(0);
-      } else if (input.startsWith("echo "))   //echo
+      } 
+      
+      else if (input.startsWith("echo "))                    //echo
+
       {
         String toEcho = input.substring(5);
         System.out.println(toEcho);
-      } else if (input.equals("pwd"))      //echo
-      {
-        System.out.println(currentDirectory.getAbsolutePath());
       } 
-     else if (input.startsWith("cd"))          //cd
-     {   
-  String directory = input.substring(3).trim();
 
-  File f;
-  if (directory.equals("./")) 
-  {
-    continue;
-  } else if (directory.equals("../")) 
-  {
-    File parent = currentDirectory.getParentFile();
-    if (parent != null && parent.exists()) {
-      currentDirectory = parent;
-    } else {
+      else if (input.equals("pwd"))                         //pwd
+      {
+       System.out.println(currentDirectory.getAbsolutePath());
+       } 
+     else if (input.startsWith("cd"))                            //cd
+     {    
+       String directory = input.substring(3).trim();
+      File f;
+      if (directory.equals("./")) 
+     {
+       System.out.println(currentDirectory.getAbsolutePath());
+     } 
+     else if (directory.equals("../")) 
+     {
+       File parent = currentDirectory.getParentFile();
+       if (parent != null && parent.exists())
+        {
+            currentDirectory = parent;
+        } 
+      else 
+      {
       System.out.println(directory + ": No such file or directory");
-    }
-  } else {
-    f = new File(directory);
+      }
+     } 
+     else 
+     {
+     f = new File(directory);
     if (f.isAbsolute()) {
       if (f.exists() && f.isDirectory()) {
         currentDirectory = f;
-      } else {
+      } 
+      else
+      {
         System.out.println(directory + ": No such file or directory");
       }
-    } else {
-      // Resolve relative path from currentDirectory
+    } else 
+    {
       File relative = new File(currentDirectory, directory);
       if (relative.exists() && relative.isDirectory()) {
         currentDirectory = relative;
