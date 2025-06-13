@@ -51,7 +51,7 @@ public class Main
              } 
           else if(directory.equals("~"))   
                 {
-                 System.out.println(System.getProperties("user.home"));
+                 System.out.println(System.getProperty("user.home"));
                 }
           else if (directory.equals("../")) 
              {
