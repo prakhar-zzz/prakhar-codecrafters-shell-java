@@ -73,7 +73,6 @@ public class Main
                    System.out.println(directory + ": No such file or directory");
                  }
           }    
-
            else 
               {
                 f = new File(directory);
@@ -90,33 +89,37 @@ public class Main
                 } 
               }
        }
-  }
-
-      } 
       else if (input.startsWith("type "))                           //type
        {
         String cmd = input.substring(5).trim();
-        if (builtins.contains(cmd)) {
+        if (builtins.contains(cmd)) 
+        {
           System.out.println(cmd + " is a shell builtin");
-        } else {
+        } 
+        else 
+        {
           String pathEnv = System.getenv("PATH");
           boolean found = false;
-          if (pathEnv != null) {
+          if (pathEnv != null) 
+          {
             String[] paths = pathEnv.split(":");
-            for (String dir : paths) {
+            for (String dir : paths) 
+            {
               File file = new File(dir, cmd);
-              if (file.exists() && file.canExecute()) {
+              if (file.exists() && file.canExecute()) 
+              {
                 System.out.println(cmd + " is " + file.getAbsolutePath());
                 found = true;
                 break;
               }
             }
           }
-          if (!found) {
+          if (!found) 
+          {
             System.out.println(cmd + ": not found");
           }
         }
-      } else {
+       else {
         String[] parts = input.split("\\s+");
         String command = parts[0];
         String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
