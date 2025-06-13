@@ -51,7 +51,8 @@ public class Main
              } 
           else if(directory.equals("~"))   
                 {
-                  File targetDir = new File(System.getProperty("user.home"));    
+                  String homePath = System.getenv("HOME");
+                  File targetDir = new File(homePath);   
                   if (targetDir.exists() && targetDir.isDirectory()) 
                    {
                        currentDirectory = targetDir;            
