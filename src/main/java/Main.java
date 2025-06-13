@@ -49,6 +49,10 @@ public class Main
              {
                System.out.println(currentDirectory.getCanonicalPath());
              } 
+          else if(directory.equals("~"))   
+                {
+                 System.out.println(System.getProperties("user.home"));
+                }
           else if (directory.equals("../")) 
              {
                File parent = currentDirectory.getParentFile();
