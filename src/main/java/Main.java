@@ -8,9 +8,12 @@ import java.util.Arrays;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class Main {
-  public static void main(String[] args) throws Exception {
+public class Main 
+{
+  public static void main(String[] args) throws Exception 
+  {
     Scanner scanner = new Scanner(System.in);
+
     Set<String> builtins = Set.of("echo", "exit", "type", "pwd", "cd");
 
     File currentDirectory = new File(System.getProperty("user.dir"));
@@ -33,49 +36,60 @@ public class Main {
       } 
 
       else if (input.equals("pwd"))                         //pwd
+      
       {
        System.out.println(currentDirectory.getCanonicalPath());
-       } 
-     else if (input.startsWith("cd"))                            //cd
-     {    
-       String directory = input.substring(3).trim();
-      File f;
-      if (directory.equals("./")) 
-     {
-       System.out.println(currentDirectory.getCanonicalPath());
-     } 
-     else if (directory.equals("../")) 
-     {
-       File parent = currentDirectory.getParentFile();
-       if (parent != null && parent.exists())
-        {
-            currentDirectory = parent;
-        } 
-      else 
-      {
-      System.out.println(directory + ": No such file or directory");
-      }
-     } 
-     else 
-     {
-     f = new File(directory);
-    if (f.isAbsolute()) {
-      if (f.exists() && f.isDirectory()) {
-        currentDirectory = f;
       } 
-      else
-      {
-        System.out.println(directory + ": No such file or directory");
-      }
-    } else 
-    {
-      File relative = new File(currentDirectory, directory);
-      if (relative.exists() && relative.isDirectory()) {
-        currentDirectory = relative;
-      } else {
-        System.out.println(directory + ": No such file or directory");
-      }
-    }
+      
+      else if (input.startsWith("cd"))                            //cd
+      {    
+       String directory = input.substring(3).trim();
+       File f;
+          if (directory.equals("./")) 
+             {
+               System.out.println(currentDirectory.getCanonicalPath());
+             } 
+          else if (directory.equals("../")) 
+             {
+               File parent = currentDirectory.getParentFile();
+              if (parent != null && parent.exists())
+                 {
+                   currentDirectory = parent;
+                 } 
+              else 
+                 {
+                   System.out.println(directory + ": No such file or directory");
+                 }
+             } 
+          else if (directory.startsWith("./"))   
+          {
+                File relative = new File(currentDirectory, directory);
+                if (relative.exists() && relative.isDirectory()) 
+                {
+                  currentDirectory = relative;
+                } 
+                 else 
+                 {
+                   System.out.println(directory + ": No such file or directory");
+                 }
+          }    
+
+           else 
+              {
+                f = new File(directory);
+                if (f.isAbsolute()) 
+                {
+                   if (f.exists() && f.isDirectory()) 
+                   {
+                    currentDirectory = f;
+                   } 
+                  else
+                  {
+                   System.out.println(directory + ": No such file or directory");
+                   }
+                } 
+              }
+       }
   }
 
       } 
