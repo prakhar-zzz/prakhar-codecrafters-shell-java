@@ -40,7 +40,8 @@ public class Main
       {
        System.out.println(currentDirectory.getCanonicalPath());
       } 
-      
+       
+
       else if (input.startsWith("cd"))                            //cd
       {    
        String directory = input.substring(3).trim();
@@ -60,11 +61,12 @@ public class Main
                   }   
           else if (directory.startsWith("../")) 
              {
-               File parent = currentDirectory.getParentFile();
-              if (parent != null && parent.exists())
-                 {
-                   currentDirectory = parent;
-                 } 
+               File targetDir = new File(currentDirectory, directory).getCanonicalFile();              
+               if (targetDir.exists() && targetDir.isDirectory()) 
+               {
+                 currentDirectory = targetDir;
+               }
+               
               else 
                  {
                    System.out.println(directory + ": No such file or directory");
@@ -127,6 +129,8 @@ public class Main
           {
             System.out.println(cmd + ": not found");
           }
+        }
+      }
         
        else 
        {
@@ -163,8 +167,8 @@ public class Main
       }
     }
   }
-  }
-}
+  
+
   
         
   
