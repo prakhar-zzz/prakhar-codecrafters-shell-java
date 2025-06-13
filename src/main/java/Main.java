@@ -11,64 +11,67 @@ import java.io.InputStreamReader;
 public class Main {
   public static void main(String[] args) throws Exception {
     Scanner scanner = new Scanner(System.in);
-
     Set<String> builtins = Set.of("echo", "exit", "type", "pwd", "cd");
 
     File currentDirectory = new File(System.getProperty("user.dir"));
 
     while (true) {
       System.out.print("$ ");
-
       String input = scanner.nextLine().trim();
 
-      if (input.equals("exit 0"))                                  //exit
+      if (input.equals("exit 0"))    //exit
       {
         System.exit(0);
-      }
-       else if (input.startsWith("echo "))                           //echo
+      } else if (input.startsWith("echo "))   //echo
       {
         String toEcho = input.substring(5);
         System.out.println(toEcho);
-      }
-       else if (input.startsWith("pwd"))                             //pwd
-       {
+      } else if (input.equals("pwd"))      //echo
+      {
         System.out.println(currentDirectory.getAbsolutePath());
       } 
-      else if(input.startsWith("cd"))                                 //cd
-      {
-       String directory = input.substring(3);
-       File f = new File(directory);
-       if(f.exists() && f.isDirectory())
-       {
-          currentDirectory = f;
-       }
-       else if (directory.equals("./"))
-       {
-        continue;
-       }
-       else if(directory.equals("../"))
-       {
-        f1= currentDirectory.getParentFile();
-        if (f1 != null && f1.exists())
-         {
-        currentDirectory = f1;
-         }
-       
-       else
-        System.out.println(directory + ": No such file or directory");
-       
-      }
-      
-      else if (input.startsWith("type "))                            //type
-      {
-        String cmd = input.substring(5).trim();
+     else if (input.startsWith("cd"))          //cd
+     {   
+  String directory = input.substring(3).trim();
 
+  File f;
+  if (directory.equals("./")) 
+  {
+    continue;
+  } else if (directory.equals("../")) 
+  {
+    File parent = currentDirectory.getParentFile();
+    if (parent != null && parent.exists()) {
+      currentDirectory = parent;
+    } else {
+      System.out.println(directory + ": No such file or directory");
+    }
+  } else {
+    f = new File(directory);
+    if (f.isAbsolute()) {
+      if (f.exists() && f.isDirectory()) {
+        currentDirectory = f;
+      } else {
+        System.out.println(directory + ": No such file or directory");
+      }
+    } else {
+      // Resolve relative path from currentDirectory
+      File relative = new File(currentDirectory, directory);
+      if (relative.exists() && relative.isDirectory()) {
+        currentDirectory = relative;
+      } else {
+        System.out.println(directory + ": No such file or directory");
+      }
+    }
+  }
+}
+      } else if (input.startsWith("type ")) {
+        String cmd = input.substring(5).trim();
         if (builtins.contains(cmd)) {
           System.out.println(cmd + " is a shell builtin");
         } else {
           String pathEnv = System.getenv("PATH");
           boolean found = false;
-
           if (pathEnv != null) {
             String[] paths = pathEnv.split(":");
             for (String dir : paths) {
@@ -80,13 +83,12 @@ public class Main {
               }
             }
           }
-
           if (!found) {
             System.out.println(cmd + ": not found");
           }
         }
       } else {
-        String[] parts = input.split("\\s+"); 
+        String[] parts = input.split("\\s+");
         String command = parts[0];
         String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
 
@@ -95,7 +97,8 @@ public class Main {
         fullCommand.addAll(Arrays.asList(commandArgs));
 
         ProcessBuilder pb = new ProcessBuilder(fullCommand);
-        pb.redirectErrorStream(true); // Merge stdout and stderr
+        pb.directory(currentDirectory); // respect cd'd directory
+        pb.redirectErrorStream(true);
 
         try {
           Process process = pb.start();
