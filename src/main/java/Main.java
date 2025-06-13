@@ -42,14 +42,18 @@ public class Main {
        {
           currentDirectory = f;
        }
-       else if (directory.startsWith("./"))
+       else if (directory.equals("./"))
        {
         continue;
        }
-       else if(directory.startsWith("../"))
+       else if(directory.equals("../"))
        {
-        f= currentDirectory.getParentFile();
-       }
+        f1= currentDirectory.getParentFile();
+        if (f1 != null && f1.exists())
+         {
+        currentDirectory = f1;
+         }
+       else if(directory.startsWith("./"))
        
        else
         System.out.println(directory + ": No such file or directory");
