@@ -12,21 +12,43 @@ public class Main {
   public static void main(String[] args) throws Exception {
     Scanner scanner = new Scanner(System.in);
 
-    Set<String> builtins = Set.of("echo", "exit", "type", "pwd");
+    Set<String> builtins = Set.of("echo", "exit", "type", "pwd", "cd");
+
+    File currentDirectory = new File(System.getProperty(user.dir))
 
     while (true) {
       System.out.print("$ ");
 
       String input = scanner.nextLine().trim();
 
-      if (input.equals("exit 0")) {
+      if (input.equals("exit 0"))                                  //exit
+      {
         System.exit(0);
-      } else if (input.startsWith("echo ")) {
+      }
+       else if (input.startsWith("echo "))                           //echo
+      {
         String toEcho = input.substring(5);
         System.out.println(toEcho);
-      } else if (input.startsWith("pwd")) {
+      }
+       else if (input.startsWith("pwd"))                             //pwd
+       {
         System.out.println(System.getProperty("user.dir"));
-      } else if (input.startsWith("type ")) {
+      } 
+      else if(input.startsWith("cd"))                                 //cd
+      {
+       String directory = input.substring(3);
+       File f = new File(directory);
+       if(f.exists() && f.isDirectory())
+       {
+          currentDirectory = f;
+       }
+       else
+        System.out.println("directory not found");
+       
+      }
+      
+      else if (input.startsWith("type "))                            //type
+      {
         String cmd = input.substring(5).trim();
 
         if (builtins.contains(cmd)) {
@@ -52,8 +74,7 @@ public class Main {
           }
         }
       } else {
-        // 🔧 External command block (fixed)
-        String[] parts = input.split("\\s+"); // split by whitespace
+        String[] parts = input.split("\\s+"); 
         String command = parts[0];
         String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
 
