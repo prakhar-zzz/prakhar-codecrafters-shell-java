@@ -43,7 +43,7 @@ public class Main {
           currentDirectory = f;
        }
        else
-        System.out.println(directory " " "No such file or directory");
+        System.out.println(directory + ": No such file or directory");
        
       }
       
