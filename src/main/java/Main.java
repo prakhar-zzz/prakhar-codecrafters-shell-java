@@ -32,6 +32,7 @@ public class Main
 
       {
         String toEcho = input.substring(5);
+        toEcho.replaceAll("\\s+", " ");
          if (toEcho.startsWith("'") && toEcho.endsWith("'") && toEcho.length() >= 2) {
         toEcho = toEcho.substring(1, toEcho.length() - 1);  // Remove surrounding single quotes
     }
