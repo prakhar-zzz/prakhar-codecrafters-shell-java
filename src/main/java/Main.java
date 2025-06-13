@@ -34,7 +34,7 @@ public class Main {
 
       else if (input.equals("pwd"))                         //pwd
       {
-       System.out.println(currentDirectory.getAbsolutePath());
+       System.out.println(currentDirectory.getCanonicalPath());
        } 
      else if (input.startsWith("cd"))                            //cd
      {    
@@ -42,7 +42,7 @@ public class Main {
       File f;
       if (directory.equals("./")) 
      {
-       System.out.println(currentDirectory.getAbsolutePath());
+       System.out.println(currentDirectory.getCanonicalPath());
      } 
      else if (directory.equals("../")) 
      {
@@ -78,7 +78,9 @@ public class Main {
     }
   }
 
-      } else if (input.startsWith("type ")) {
+      } 
+      else if (input.startsWith("type "))                           //type
+       {
         String cmd = input.substring(5).trim();
         if (builtins.contains(cmd)) {
           System.out.println(cmd + " is a shell builtin");
