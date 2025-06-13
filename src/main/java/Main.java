@@ -42,11 +42,11 @@ public class Main {
        {
           currentDirectory = f;
        }
-       else if (directory.equlas("./"))
+       else if (directory.equals("./"))
        {
         continue;
        }
-       else if(directory.equlas("../"))
+       else if(directory.equals("../"))
        {
         f= currentDirectory.getParentFile();
        }
