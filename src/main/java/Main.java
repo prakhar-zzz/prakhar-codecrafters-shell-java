@@ -53,7 +53,6 @@ public class Main {
          {
         currentDirectory = f1;
          }
-       else if(directory.startsWith("./"))
        
        else
         System.out.println(directory + ": No such file or directory");
