@@ -64,7 +64,7 @@ public class Main {
       }
     }
   }
-}
+
       } else if (input.startsWith("type ")) {
         String cmd = input.substring(5).trim();
         if (builtins.contains(cmd)) {
@@ -116,4 +116,4 @@ public class Main {
       }
     }
   }
-
+}
