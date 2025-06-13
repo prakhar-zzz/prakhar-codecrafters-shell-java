@@ -58,7 +58,7 @@ public class Main
                        currentDirectory = targetDir;            
                    }
                   }   
-          else if (directory.equals("../")) 
+          else if (directory.startsWith("../")) 
              {
                File parent = currentDirectory.getParentFile();
               if (parent != null && parent.exists())
