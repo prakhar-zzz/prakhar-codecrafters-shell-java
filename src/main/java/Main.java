@@ -14,7 +14,7 @@ public class Main {
 
     Set<String> builtins = Set.of("echo", "exit", "type", "pwd", "cd");
 
-    File currentDirectory = new File(System.getProperty(user.dir))
+    File currentDirectory = new File(System.getProperty(user.dir));
 
     while (true) {
       System.out.print("$ ");
