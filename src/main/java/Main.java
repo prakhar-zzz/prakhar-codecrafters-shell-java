@@ -1,54 +1,34 @@
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 public class Main {
   public static void main(String[] args) throws Exception {
     Scanner scanner = new Scanner(System.in);
 
     Set<String> builtins = Set.of("echo", "exit", "type", "pwd", "cd");
 
-    File currentDirectory = new File(System.getProperty(user.dir));
+    File currentDirectory = new File(System.getProperty("user.dir"));
 
     while (true) {
       System.out.print("$ ");
 
       String input = scanner.nextLine().trim();
+      if (input.isEmpty()) continue;
 
-      if (input.equals("exit 0"))                                  //exit
-      {
+      if (input.equals("exit 0")) {
         System.exit(0);
-      }
-       else if (input.startsWith("echo "))                           //echo
-      {
+      } else if (input.startsWith("echo ")) {
         String toEcho = input.substring(5);
         System.out.println(toEcho);
-      }
-       else if (input.startsWith("pwd"))                             //pwd
-       {
-        System.out.println(System.getProperty("user.dir"));
-      } 
-      else if(input.startsWith("cd"))                                 //cd
-      {
-       String directory = input.substring(3);
-       File f = new File(directory);
-       if(f.exists() && f.isDirectory())
-       {
+      } else if (input.equals("pwd")) {
+        System.out.println(currentDirectory.getAbsolutePath());
+      } else if (input.startsWith("cd")) {
+        String directory = input.substring(3).trim();
+        File f = new File(directory);
+
+        if (f.exists() && f.isDirectory()) {
           currentDirectory = f;
-       }
-       else
-        System.out.println("directory not found");
-       
-      }
-      
-      else if (input.startsWith("type "))                            //type
-      {
+        } else {
+          System.out.println("cd: directory not found");
+        }
+      } else if (input.startsWith("type ")) {
         String cmd = input.substring(5).trim();
 
         if (builtins.contains(cmd)) {
@@ -58,7 +38,7 @@ public class Main {
           boolean found = false;
 
           if (pathEnv != null) {
-            String[] paths = pathEnv.split(":");
+            String[] paths = pathEnv.split(File.pathSeparator);
             for (String dir : paths) {
               File file = new File(dir, cmd);
               if (file.exists() && file.canExecute()) {
@@ -83,7 +63,8 @@ public class Main {
         fullCommand.addAll(Arrays.asList(commandArgs));
 
         ProcessBuilder pb = new ProcessBuilder(fullCommand);
-        pb.redirectErrorStream(true); // Merge stdout and stderr
+        pb.directory(currentDirectory); // Important!
+        pb.redirectErrorStream(true);
 
         try {
           Process process = pb.start();
