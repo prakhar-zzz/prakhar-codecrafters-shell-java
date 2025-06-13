@@ -51,8 +51,8 @@ public class Main
              } 
           else if(directory.equals("~"))   
                 {
-                 System.out.println(System.getenv("home"));
-                }
+                  File targetDir = new File(System.getProperty("user.home"));                
+                 }
           else if (directory.equals("../")) 
              {
                File parent = currentDirectory.getParentFile();
